@@ -114,11 +114,11 @@ def top_ages(conn, gen):
 env = Environment(loader = FileSystemLoader('templates/'))
 template = env.get_template('templateRE.html')
 
-select_mem(create_conn(r"D:\\5th Semestr\\MMAD\\vk_analyse\\vk_members_2019_10_23.db"))
-top_communityM(create_conn(r"D:\\5th Semestr\\MMAD\\vk_analyse\\vk_members_2019_10_23.db"), 'Жен.')
-top_communityM(create_conn(r"D:\\5th Semestr\\MMAD\\vk_analyse\\vk_members_2019_10_23.db"), 'Муж.')
-graphs = top_ages(create_conn(r"D:\\5th Semestr\\MMAD\\vk_analyse\\vk_members_2019_10_23.db"), 'Жен.')
-tgraphs = top_ages(create_conn(r"D:\\5th Semestr\\MMAD\\vk_analyse\\vk_members_2019_10_23.db"), 'Муж.')
+select_mem(create_conn(r"vk_members_2019_10_23.db"))
+top_communityM(create_conn(r"vk_members_2019_10_23.db"), 'Жен.')
+top_communityM(create_conn(r"vk_members_2019_10_23.db"), 'Муж.')
+graphs = top_ages(create_conn(r"vk_members_2019_10_23.db"), 'Жен.')
+tgraphs = top_ages(create_conn(r"vk_members_2019_10_23.db"), 'Муж.')
 
 with open("templates/new.html", "w") as f:
     f.write(template.render(url1 = 'screenshots/categoryGroups.png', url2 = 'screenshots/womensTOP5.png', url3 = 'screenshots/mensTOP5.png', mems = graphs))
