@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SqlDataSourceStorage">
+    <option name="dataSources">
+      <list>
+        <State>
+          <option name="id" value="a210e997-c79a-4186-95d0-41dd811ff1b0" />
+          <option name="name" value="vk_members_2019_11_5" />
+          <option name="urls">
+            <array>
+              <option value="file://$PROJECT_DIR$/vk_members_2019_11_5.db" />
+            </array>
+          </option>
+        </State>
+      </list>
+    </option>
+  </component>
+</project>

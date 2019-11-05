@@ -4,7 +4,7 @@ import time
 
 session = vk.Session(access_token='d5b441ccd5b441ccd5b441cc0bd5d94752dd5b4d5b441cc883ce57ed215c145977b71cd')
 api = vk.API(session)
-v = 5.101
+v = 5.103
 
 
 def get_users():
@@ -17,9 +17,10 @@ def get_users():
         offset += 1000
         for member_id in response['items']:
             count += 1
-            members.append(api.users.get(user_ids=member_id, v=v, fields='bdate, sex'))
-            # if count > 10:
-            #     break
+            members.append(api.users.get(user_ids=member_id, v=v, fields='bdate, sex, education'))
+            if count > 100:
+                break
+    print(members)
     return members
 
 
@@ -70,6 +71,8 @@ def get_vsu_posts():
 
 def get_activity(posts, users_ids):
     activity = []
+    like_flag = 0
+    comment_flag = 0
     for i in posts:
         post_id = posts[i]
         # print(post_id)
@@ -77,21 +80,21 @@ def get_activity(posts, users_ids):
         comments_list = api.wall.getComments(owner_id='-108366262', post_id=post_id, v=v)
         # print(comments_list)
         # print(likes_list)
-        if likes_list['count'] != 0:
-            for like in likes_list['items']:
+        for user_id in users_ids:
+            if likes_list['count'] != 0:
+                for like in likes_list['items']:
+                    if user_id == like:
+                        like_flag = 1
+                    else:
+                        like_flag = 0
                 for comment in comments_list['items']:
                     # print(comment)
-                    for user_id in users_ids:
-                        if user_id == like:
-                            like_flag = 1
-                        else:
-                            like_flag = 0
-                        if user_id == comment['from_id']:
-                            comment_flag = 1
-                        else:
-                            comment_flag = 0
-                        if like_flag == 1 or comment_flag == 1:
-                            activity.append({'userID': user_id, 'postID': post_id,
+                    if user_id == comment['from_id']:
+                        comment_flag = 1
+                    else:
+                        comment_flag = 0
+            if like_flag == 1 or comment_flag == 1:
+                activity.append({'userID': user_id, 'postID': post_id,
                                              'like': like_flag, 'comment': comment_flag})
     # print(*activity, sep='\n')
     return activity

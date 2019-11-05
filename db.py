@@ -4,7 +4,7 @@ import re
 import os
 
 
-def create_db(remove):
+def generate_db_name():
     year_now = str(datetime.now().year)
     month_now = str(datetime.now().month)
     day_now = str(datetime.now().day)
@@ -12,6 +12,11 @@ def create_db(remove):
     date_now = year_now + '_' + month_now + '_' + day_now
 
     db_name = 'vk_members_' + str(date_now) + '.db'
+    return db_name
+
+
+def create_db(remove):
+    db_name = generate_db_name()
 
     if os.path.isfile(db_name) and remove:
         os.remove(db_name)
@@ -34,7 +39,9 @@ def create_tables():
                    '(id integer primary key, '
                    'name varchar(100), '
                    'gender varchar(10), '
-                   'age integer)')
+                   'age integer, '
+                   'university varchar(150),'
+                   'faculty varchar(150))')
 
     cursor.execute('CREATE TABLE VSU_Member_Activity'
                    '(like integer,'
@@ -67,6 +74,15 @@ def members_insert(members):
             # print(info)
             member_id = info['id']
             member_name = info['first_name'] + ' ' + info['last_name']
+            university = None
+            faculty = None
+            try:
+                if info['university']:
+                    university = info['university_name']
+                    if info['faculty']:
+                        faculty = info['faculty_name']
+            except:
+                print('education is null')
             gender = ''
             if info['sex'] == 1:
                 gender = 'Жен.'
@@ -79,7 +95,7 @@ def members_insert(members):
             if 'bdate' in info:
                 # Check bdate for completeness ( dd-mm-yy )
                 bdate = re.match('([0-9]+?.[0-9]+?.[0-9]+)', info['bdate'])
-            age = ''
+            age = None
             if bdate:
                 birth_date = bdate.group(0).split('.')
                 day_bdate = int(birth_date[0])
@@ -93,13 +109,11 @@ def members_insert(members):
                     age = str(year_now - year_bdate)
                 else:
                     age = str(year_now - year_bdate - 1)
-                if int(age) > 50:
-                    age = None
             elif bdate is None:
                 age = None
 
-            cursor.execute('INSERT INTO VSU_Member(id, name, gender, age) '
-                           'VALUES(?, ?, ?, ?)', [member_id, member_name, gender, age])
+            cursor.execute('INSERT INTO VSU_Member(id, name, gender, age, university, faculty) '
+                           'VALUES(?, ?, ?, ?, ?, ?)', [member_id, member_name, gender, age, university, faculty])
 
     connection.commit()
     connection.close()
