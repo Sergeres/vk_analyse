@@ -18,7 +18,7 @@ def get_users():
         for member_id in response['items']:
             count += 1
             members.append(api.users.get(user_ids=member_id, v=v, fields='bdate, sex, education'))
-            if count > 100:
+            if count > response['count']:
                 break
     print(members)
     return members
@@ -71,8 +71,6 @@ def get_vsu_posts():
 
 def get_activity(posts, users_ids):
     activity = []
-    like_flag = 0
-    comment_flag = 0
     for i in posts:
         post_id = posts[i]
         # print(post_id)
@@ -81,18 +79,17 @@ def get_activity(posts, users_ids):
         # print(comments_list)
         # print(likes_list)
         for user_id in users_ids:
+            like_flag = 0
+            comment_flag = 0
             if likes_list['count'] != 0:
-                for like in likes_list['items']:
-                    if user_id == like:
-                        like_flag = 1
-                    else:
-                        like_flag = 0
-                for comment in comments_list['items']:
-                    # print(comment)
-                    if user_id == comment['from_id']:
-                        comment_flag = 1
-                    else:
-                        comment_flag = 0
+                if user_id in likes_list['items']:
+                    like_flag = 1
+                else:
+                    like_flag = 0
+                if user_id in comments_list['items']:
+                    comment_flag = 1
+                else:
+                    comment_flag = 0
             if like_flag == 1 or comment_flag == 1:
                 activity.append({'userID': user_id, 'postID': post_id,
                                              'like': like_flag, 'comment': comment_flag})
