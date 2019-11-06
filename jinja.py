@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import sqlite3
 import pandas as pand
+import db
 import matplotlib.pyplot as plt
 from jinja2 import Environment, FunctionLoader, PackageLoader, PrefixLoader, DictLoader, FileSystemLoader
 
@@ -111,15 +112,37 @@ def top_ages(conn, gen):
     return graphs
 
 
+def peoplewoage(conn):
+    data = []
+    cur = conn.cursor()
+    cur.execute("select count(*) from VSU_Member")
+    data.append(cur.fetchall()[0])
+    cur.execute("select count(*) from VSU_Member where age not null")
+    data.append(cur.fetchall()[0])
+    data = list(sum(data, ()))
+    data[0] = data[0] - data[1]
+    labels = 'Не указали возраст', 'Указали возраст'
+    sizes = [(data[0]/(data[0] + data[1])*100), (data[1]/(data[0] + data[1])*100)]
+    explode = (0, 0.1)  # only "explode" the 2nd slice (i.e. 'Hogs')
+    fig1, ax1 = plt.subplots()
+    ax1.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%', shadow=True, startangle=90)
+    # ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+    plt.title("Распределение пользователей по наличию возраста.")
+    plt.savefig('templates/screenshots/piemembers' + '.png')
+
+
+
 env = Environment(loader = FileSystemLoader('templates/'))
 template = env.get_template('templateRE.html')
 
-select_mem(create_conn(r"vk_members_2019_10_23.db"))
-top_communityM(create_conn(r"vk_members_2019_10_23.db"), 'Жен.')
-top_communityM(create_conn(r"vk_members_2019_10_23.db"), 'Муж.')
-graphs = top_ages(create_conn(r"vk_members_2019_10_23.db"), 'Жен.')
-tgraphs = top_ages(create_conn(r"vk_members_2019_10_23.db"), 'Муж.')
+peoplewoage(create_conn(db.generate_db_name()))
+select_mem(create_conn(db.generate_db_name()))
+top_communityM(create_conn(db.generate_db_name()), 'Жен.')
+top_communityM(create_conn(db.generate_db_name()), 'Муж.')
+graphs = top_ages(create_conn(db.generate_db_name()), 'Жен.')
+tgraphs = top_ages(create_conn(db.generate_db_name()), 'Муж.')
+
 
 with open("templates/new.html", "w") as f:
-    f.write(template.render(url1 = 'screenshots/categoryGroups.png', url2 = 'screenshots/womensTOP5.png', url3 = 'screenshots/mensTOP5.png', mems = graphs))
+    f.write(template.render(url1 = 'screenshots/categoryGroups.png', url2 = 'screenshots/womensTOP5.png', url3 = 'screenshots/mensTOP5.png', mems = graphs, url4 = 'screenshots/piemembers.png'))
 

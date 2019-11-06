@@ -95,32 +95,20 @@
 </head>
 <body>
       <br>
-      {% for user in members %}
-        <li>{{ user }}</li>
-      {% endfor %}
+      <div align="center" id="vk_post_-108366262_5971"></div>
+<script type="text/javascript" src="https://vk.com/js/api/openapi.js?162"></script>
+<script type="text/javascript">
+  (function() {
+    VK.Widgets.Post("vk_post_-108366262_5971", -108366262, 5971, 'fsmoxofL7bcOvtJPBi_0U07CfHA');
+  }());
+</script>
       <br>
-        <div id="slider-wrap">
-            <div id="slider">
-            {% for name in memsss %}
-                <div class="slide"><img src="{{ name }}" width="500" height="300"></div>
-            {% endfor %}
-            </div>
-        </div>
-
-
       <table align="center">
         <tr>
-            <td colspan="2" align="center">
-            <p></p>
+            <td align="center">
+                <img src="{{ url4 }}" alt="альтернативный текст">
             </td>
-        </tr>
-        <tr>
-            <td colspan="2" align="center">
-
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2" align="center">
+            <td align="center">
             <img src="{{ url1 }}" alt="альтернативный текст">
             </td>
         </tr>
@@ -183,12 +171,10 @@
         _sliderItems.forEach(function (item, index) {
           _items.push({ item: item, position: index, transform: 0 });
         });
-
         var position = {
           getMin: 0,
           getMax: _items.length - 1,
         }
-
         var _transformItem = function (direction) {
           if (direction === 'right') {
             if ((_positionLeftItem + _wrapperWidth / _itemWidth - 1) >= position.getMax) {
@@ -246,9 +232,7 @@
 
       }
     }());
-
     var slider = multiItemSlider('.slider')
-
   </script>
 
 </html>
