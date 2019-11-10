@@ -76,6 +76,7 @@ def get_activity(posts, users_ids):
         # print(post_id)
         likes_list = api.likes.getList(type='post', item_id=post_id, v=v, filter='likes', owner_id='-108366262')
         comments_list = api.wall.getComments(owner_id='-108366262', post_id=post_id, v=v)
+       # print(comments_list)
         # print(comments_list)
         # print(likes_list)
         for user_id in users_ids:
@@ -86,13 +87,19 @@ def get_activity(posts, users_ids):
                     like_flag = 1
                 else:
                     like_flag = 0
-                if user_id in comments_list['items']:
-                    comment_flag = 1
-                else:
-                    comment_flag = 0
-            if like_flag == 1 or comment_flag == 1:
+            # print(comments_list['items'])
+            if comments_list['items'] is not None:
+                for items in comments_list['items']:
+                    if user_id == items['from_id']:
+                        comment_flag = 1
+                        break
+                    else:
+                        comment_flag = 0
+            if like_flag == 0 and comment_flag == 0:
+                continue
+            else:
                 activity.append({'userID': user_id, 'postID': post_id,
-                                             'like': like_flag, 'comment': comment_flag})
+                                 'like': like_flag, 'comment': comment_flag})
     # print(*activity, sep='\n')
     return activity
 
