@@ -144,5 +144,5 @@ tgraphs = top_ages(create_conn(db.generate_db_name()), 'Муж.')
 
 
 with open("templates/new.html", "w") as f:
-    f.write(template.render(url1 = 'screenshots/categoryGroups.png', url2 = 'screenshots/womensTOP5.png', url3 = 'screenshots/mensTOP5.png', mems = graphs, url4 = 'screenshots/piemembers.png'))
+    f.write(template.render(url1 = 'screenshots/categoryGroups.png', url2 = 'screenshots/womensTOP5.png', url3 = 'screenshots/mensTOP5.png', mems = graphs, mems0 = tgraphs, url4 = 'screenshots/piemembers.png'))
 
