@@ -1,129 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru-ru">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" href="slick/slick.css"/>
     <link rel="stylesheet" href="slick/slick-theme.css"/>
     <style>
-    /*!
-     * chiefSlider (https://itchief.ru/lessons/php/feedback-form-for-website)
-     * Copyright 2018 Alexander Maltsev
-     * Licensed under MIT (https://github.com/itchief/feedback-form/blob/master/LICENSE)
-     */
-
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-      color: #fff;
-      height: 300px;
-        background: #aaa;
-    }
-
-    .slider {
-      position: relative;
-      overflow: hidden;
-    }
-
-    .slider__wrapper {
-      display: flex;
-      transition: transform 0.6s ease;
-    }
-
-    .slider__item {
-      flex: 0 0 100%;
-      max-width: 100%;
-    }
-
-    .slider__control {
-      position: absolute;
-      top: 50%;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      width: 40px;
-      color: #fff;
-      text-align: center;
-      opacity: 0.5;
-      height: 50px;
-      transform: translateY(-50%);
-      background: rgba(0, 0, 0, .5);
-    }
-
-    .slider__control_show {
-      display: flex;
-    }
-
-    .slider__control:hover,
-    .slider__control:focus {
-      color: #fff;
-      text-decoration: none;
-      outline: 0;
-      opacity: .9;
-    }
-
-    .slider__control_left {
-      left: 0;
-    }
-
-    .slider__control_right {
-      right: 0;
-    }
-
-    .slider__control::before {
-      content: '';
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      background: transparent no-repeat center center;
-      background-size: 100% 100%;
-    }
-
-    .slider__control_left::before {
-      background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23fff' viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E");
-    }
-
-    .slider__control_right::before {
-      background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23fff' viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E");
-    }
-
-    .slider__item>div {
-      line-height: 500px;
-      font-size: 100px;
-      text-align: center;
-    }
-  </style>
+        .slick-prev:before,
+        .slick-next:before {
+            color: black;
+        }
+    </style>
 </head>
 <body>
       <br>
       <table align="center">
+          <tr align="center">
+              <td align="center" colspan="2">
+                  <h1>Анализ подписчиков группы "Абитуриенты ВятГУ 2020"</h1>
+              </td>
+          </tr>
         <tr>
             <td align="center">
-                <img src="{{ url4 }}" alt="альтернативный текст">
+                <img src="{{ url4 }}">
             </td>
             <td align="center">
-            <img src="{{ url1 }}" alt="альтернативный текст">
+            <img src="{{ url1 }}">
             </td>
+
         </tr>
+          <tr>
+          <td align="center" colspan="2">
+              <br>
+              <h3>"Количество людей не указавших ВУЗ"</h3>
+              <img src="{{ url5 }}">
+          </td>
+      </tr>
         <tr>
             <td align="center">
-            <p>Top 5 groups of Women</p>
+            <p><h3>Топ 5 групп у женщин</h3></p>
             </td>
             <td align="center">
-            <p>Top 5 groups of Men</p>
+            <p><h3>Топ 5 групп у мужчин</h3></p>
             </td>
         </tr>
         <tr>
             <td>
-            <img src="{{ url2 }}" alt="альтернативный текст">
+            <img src="{{ url2 }}">
             </td>
             <td>
-            <img src="{{ url3 }}" alt="альтернативный текст">
+            <img src="{{ url3 }}">
             </td>
         <tr>
+
       </table>
           <table align="center" >
               <tr>
             <td align="center" style="padding: 30px" >
+                <p><h3>Топ 5 групп у женщин, распределение по возрастам</h3></p>
                 <div class="sl" style="margin: 20px auto; max-width: 700px">
                 {% for name in mems %}
                     <div class="sl_slide">
@@ -133,6 +66,7 @@
                 </div>
             </td>
             <td align="center" style="padding: 30px">
+                <p><h3>Топ 5 групп у мужчин, распределение по возрастам</h3></p>
                 <div class="sl" style="margin: 20px auto; max-width: 700px">
                 {% for name in mems0 %}
                     <div class="sl_slide">
@@ -142,93 +76,26 @@
                 </div>
             </td>
         </tr>
+              <tr>
+                  <td align="center">
+                      <h3>Топ постов по количеству лайков</h3>
+                      <ul>
+                      {% for member in datas %}
+                          <a href="{{member[0]}}">{{member[0]}}</a>  , Количество лайков = {{member[1]}}<br>
+                      {% endfor %}
+                      </ul>
+                  </td>
+                  <td align="center">
+                      <h3>Топ постов по количеству комментариев</h3>
+                      <ul>
+                      {% for comment in comments %}
+                          <a href="{{comment[0]}}">{{comment[0]}}</a>  , Количество комментариев = {{comment[1]}}<br>
+                      {% endfor %}
+                      </ul>
+                  </td>
+              </tr>
           </table>
   </body>
-
-<script>
-    'use strict';
-    var multiItemSlider = (function () {
-      return function (selector, config) {
-        var
-          _mainElement = document.querySelector(selector), // основный элемент блока
-          _sliderWrapper = _mainElement.querySelector('.slider__wrapper'), // обертка для .slider-item
-          _sliderItems = _mainElement.querySelectorAll('.slider__item'), // элементы (.slider-item)
-          _sliderControls = _mainElement.querySelectorAll('.slider__control'), // элементы управления
-          _sliderControlLeft = _mainElement.querySelector('.slider__control_left'), // кнопка "LEFT"
-          _sliderControlRight = _mainElement.querySelector('.slider__control_right'), // кнопка "RIGHT"
-          _wrapperWidth = parseFloat(getComputedStyle(_sliderWrapper).width), // ширина обёртки
-          _itemWidth = parseFloat(getComputedStyle(_sliderItems[0]).width), // ширина одного элемента
-          _positionLeftItem = 0, // позиция левого активного элемента
-          _transform = 0, // значение транфсофрмации .slider_wrapper
-          _step = _itemWidth / _wrapperWidth * 100, // величина шага (для трансформации)
-          _items = []; // массив элементов
-        // наполнение массива _items
-        _sliderItems.forEach(function (item, index) {
-          _items.push({ item: item, position: index, transform: 0 });
-        });
-        var position = {
-          getMin: 0,
-          getMax: _items.length - 1,
-        }
-        var _transformItem = function (direction) {
-          if (direction === 'right') {
-            if ((_positionLeftItem + _wrapperWidth / _itemWidth - 1) >= position.getMax) {
-              return;
-            }
-            if (!_sliderControlLeft.classList.contains('slider__control_show')) {
-              _sliderControlLeft.classList.add('slider__control_show');
-            }
-            if (_sliderControlRight.classList.contains('slider__control_show') && (_positionLeftItem + _wrapperWidth / _itemWidth) >= position.getMax) {
-              _sliderControlRight.classList.remove('slider__control_show');
-            }
-            _positionLeftItem++;
-            _transform -= _step;
-          }
-          if (direction === 'left') {
-            if (_positionLeftItem <= position.getMin) {
-              return;
-            }
-            if (!_sliderControlRight.classList.contains('slider__control_show')) {
-              _sliderControlRight.classList.add('slider__control_show');
-            }
-            if (_sliderControlLeft.classList.contains('slider__control_show') && _positionLeftItem - 1 <= position.getMin) {
-              _sliderControlLeft.classList.remove('slider__control_show');
-            }
-            _positionLeftItem--;
-            _transform += _step;
-          }
-          _sliderWrapper.style.transform = 'translateX(' + _transform + '%)';
-        }
-
-        // обработчик события click для кнопок "назад" и "вперед"
-        var _controlClick = function (e) {
-          var direction = this.classList.contains('slider__control_right') ? 'right' : 'left';
-          e.preventDefault();
-          _transformItem(direction);
-        };
-
-        var _setUpListeners = function () {
-          // добавление к кнопкам "назад" и "вперед" обрботчика _controlClick для событя click
-          _sliderControls.forEach(function (item) {
-            item.addEventListener('click', _controlClick);
-          });
-        }
-        // инициализация
-        _setUpListeners();
-
-        return {
-          right: function () { // метод right
-            _transformItem('right');
-          },
-          left: function () { // метод left
-            _transformItem('left');
-          }
-        }
-
-      }
-    }());
-    var slider = multiItemSlider('.slider')
-  </script>
     <script src='http://yastatic.net/jquery/2.1.3/jquery.min.js'></script>
     <script src='slick/slick.min.js'></script>
     <script src='js.js'></script>

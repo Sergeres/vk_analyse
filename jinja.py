@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 import sqlite3
+import vk
 import pandas as pand
 import db
 import matplotlib.pyplot as plt
 from jinja2 import Environment, FunctionLoader, PackageLoader, PrefixLoader, DictLoader, FileSystemLoader
-
+session = vk.Session(access_token='d5b441ccd5b441ccd5b441cc0bd5d94752dd5b4d5b441cc883ce57ed215c145977b71cd')
+api = vk.API(session)
+v = 5.103
 
 def create_conn(db_file):
     conn = None
@@ -46,7 +49,44 @@ def select_mem(conn):
     return rows
 
 
-def top_communityM(conn, gen):
+def select_member_noedc(conn):
+    rows = []
+    cur = conn.cursor()
+    cur.execute("SELECT count(name) FROM VSU_Member WHERE age < 18 and university is null ")
+    rows.append(cur.fetchall()[0])
+    cur.execute("SELECT count(name) FROM VSU_Member WHERE age >= 18 and age < 21 and university is null ")
+    rows.append(cur.fetchall()[0])
+    cur.execute("SELECT count(name) FROM VSU_Member WHERE age >= 21 and age < 24 and university is null ")
+    rows.append(cur.fetchall()[0])
+    cur.execute("SELECT count(name) FROM VSU_Member WHERE age >= 24 and age < 27 and university is null ")
+    rows.append(cur.fetchall()[0])
+    cur.execute("SELECT count(name) FROM VSU_Member WHERE age >= 27 and age < 30 and university is null ")
+    rows.append(cur.fetchall()[0])
+    cur.execute("SELECT count(name) FROM VSU_Member WHERE age >= 30 and age < 35 and university is null ")
+    rows.append(cur.fetchall()[0])
+    cur.execute("SELECT count(name) FROM VSU_Member WHERE age >= 35 and age < 45 and university is null ")
+    rows.append(cur.fetchall()[0])
+    cur.execute("SELECT count(name) FROM VSU_Member WHERE age > 45 and university is null ")
+    rows.append(cur.fetchall()[0])
+    rows = list(sum(rows, ()))
+    summa = sum(rows)
+    x_row = ["< 18","18-21","21-24","24-27","27-30","30-35","35-45","> 45"]
+    # for i in range(rows.__len__()):
+    #     if rows[i] == 0:
+    #         continue
+    #     else:
+    #         rows[i] = rows[i] * 100 / summa
+    dataframe = pand.DataFrame()
+    dataframe['Количество'] = rows
+    dataframe['Категории'] = x_row
+    agraph = dataframe.plot(x = 'Категории', kind = 'bar', color = 'teal')
+    agraph.set(xlabel = "Категории возрастов", ylabel = "Количество")
+    plt.tight_layout()
+    plt.savefig('templates/screenshots/membersNOEDC.png')
+    return rows
+
+
+def top_community(conn, gen):
     cur = conn.cursor()
     cur.execute("select VSU_Member_Community.name, count(*) from VSU_Member_Community join VSU_Member on VSU_Member_Community.memberID = VSU_Member.id where VSU_Member.gender =:gen group by VSU_Member_Community.name order by count(*) DESC limit 5", {"gen": gen})
     data = cur.fetchall()
@@ -131,18 +171,39 @@ def peoplewoage(conn):
     plt.savefig('templates/screenshots/piemembers' + '.png')
 
 
+def toplike(conn):
+    data, result = [], []
+    cur = conn.cursor()
+    cur.execute("select postID, count(*) from VSU_Member_Activity where like == 1 group by postID order by count(*) desc limit 5")
+    data.append(cur.fetchall())
+    for i in range(data[0].__len__()):
+        result.append(['https://vk.com/prcom_vyatsu?w=wall-108366262_' + str(data[0][i][0]), data[0][i][1]])
+    return result
+
+
+def topcomment(conn):
+    data, result = [], []
+    cur = conn.cursor()
+    cur.execute("select postID, count(*) from VSU_Member_Activity where comment == 1 group by postID order by count(*) desc limit 5")
+    data.append(cur.fetchall())
+    for i in range(data[0].__len__()):
+        result.append(['https://vk.com/prcom_vyatsu?w=wall-108366262_' + str(data[0][i][0]), data[0][i][1]])
+    return result
+
 
 env = Environment(loader = FileSystemLoader('templates/'))
 template = env.get_template('templateRE.html')
 
 peoplewoage(create_conn(db.generate_db_name()))
 select_mem(create_conn(db.generate_db_name()))
-top_communityM(create_conn(db.generate_db_name()), 'Жен.')
-top_communityM(create_conn(db.generate_db_name()), 'Муж.')
+top_community(create_conn(db.generate_db_name()), 'Жен.')
+top_community(create_conn(db.generate_db_name()), 'Муж.')
 graphs = top_ages(create_conn(db.generate_db_name()), 'Жен.')
 tgraphs = top_ages(create_conn(db.generate_db_name()), 'Муж.')
+datas = toplike(create_conn(db.generate_db_name()))
+comments = topcomment(create_conn(db.generate_db_name()))
+select_member_noedc(create_conn(db.generate_db_name()))
 
-
-with open("templates/new.html", "w") as f:
-    f.write(template.render(url1 = 'screenshots/categoryGroups.png', url2 = 'screenshots/womensTOP5.png', url3 = 'screenshots/mensTOP5.png', mems = graphs, mems0 = tgraphs, url4 = 'screenshots/piemembers.png'))
+with open("templates/new.html", "w", encoding='utf-8') as f:
+    f.write(template.render(url1 = 'screenshots/categoryGroups.png', url2 = 'screenshots/womensTOP5.png', url3 = 'screenshots/mensTOP5.png', mems = graphs, mems0 = tgraphs, url4 = 'screenshots/piemembers.png', datas = datas, comments = comments, url5 = 'screenshots/membersNOEDC.png'))
 
