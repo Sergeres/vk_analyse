@@ -49,7 +49,8 @@ def create_tables():
                    'comment integer,'
                    'postID integer,'
                    'memberID integer,'
-                   'communityID integer, '
+                   'communityID integer,'
+                   'foreign key(postID) references VSU_Post(id),'
                    'foreign key(memberID) references VSU_Member(id),'
                    'foreign key(communityID) references VSU_Community(id))')
 
@@ -59,6 +60,16 @@ def create_tables():
                    'href text, '
                    'name text,'
                    'foreign key(memberID) references VSU_Member(id))')
+
+    cursor.execute('CREATE TABLE VSU_Post'
+                   '(id integer,'
+                   'content text,'
+                   'publishDate DATE,'
+                   'publishTime TIME,'
+                   'likes integer,'
+                   'comments integer,'
+                   'reposts integer'
+                   ')')
 
     connection.commit()
     connection.close()
@@ -178,6 +189,25 @@ def insert_activities(activities):
         # print(userID, postID, like, comment)
         cursor.execute('INSERT INTO VSU_Member_Activity(like, repost, comment, postID, memberID, communityID )'
                        'VALUES(?, ?, ?, ?, ?, ?)', [like, 0, comment, post_id, user_id, 108366262])
+
+    connection.commit()
+    connection.close()
+
+
+def insert_posts(posts):
+    connection = create_db(False)
+    cursor = connection.cursor()
+
+    for post in posts:
+        id = post['postID']
+        likes = post['likes']
+        comments = post['comments']
+        reposts = post['reposts']
+        date = post['date']
+        time = post['time']
+        text = post['text']
+        cursor.execute('INSERT INTO VSU_Post(id, content, publishDate, publishTime, likes, comments, reposts)'
+                       'VALUES (?, ?, ?, ?, ?, ?, ?)', [id, text, date, time, likes, comments, reposts])
 
     connection.commit()
     connection.close()
