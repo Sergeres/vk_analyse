@@ -1,6 +1,7 @@
 import vk
 import db
 import time
+import datetime
 
 session = vk.Session(access_token='d5b441ccd5b441ccd5b441cc0bd5d94752dd5b4d5b441cc883ce57ed215c145977b71cd')
 api = vk.API(session)
@@ -18,7 +19,7 @@ def get_users():
         for member_id in response['items']:
             count += 1
             members.append(api.users.get(user_ids=member_id, v=v, fields='bdate, sex, education'))
-            if count > response['count']:
+            if count > 20:
                 break
     print(members)
     return members
@@ -56,23 +57,39 @@ def get_vsu_posts():
     response = api.wall.get(owner_id='-108366262', v=v, offset=offset, filter='owner')
     count = response['count']
     # print(count)
-    posts = {}
+    posts = []
     while offset < count:
         response = api.wall.get(owner_id='-108366262', v=v, count=count, offset=offset, filter='owner')
         offset += 100
         for post in response['items']:
+            # print('post:', post)
             # print(post)
-            posts[counter] = post['id']
+            date = datetime.datetime.fromtimestamp(post['date'])
+            date = date.strftime('%Y-%m-%d')
+            time = datetime.datetime.fromtimestamp(post['date'])
+            time = time.strftime('%H:%M:%S')
+            reposts = post['reposts']['count']
+            comments = post['comments']['count']
+            likes = post['likes']['count']
+            #print('likes: ', likes)
+            #print('comments: ', comments)
+            #print('reposts: ', reposts)
+            #print('date: ', date)
+            #print('time: ', time.strftime('%H:%M:%S'))
+            posts.append({'postID': post['id'], 'likes': likes, 'comments': comments,
+                          'reposts': reposts, 'date': date, 'time': time, 'text': post['text']})
             counter += 1
             if counter > count:
                 break
+    # print(posts)
     return posts
 
 
 def get_activity(posts, users_ids):
     activity = []
-    for i in posts:
-        post_id = posts[i]
+    for post in posts:
+        #print(post)
+        post_id = post['postID']
         # print(post_id)
         likes_list = api.likes.getList(type='post', item_id=post_id, v=v, filter='likes', owner_id='-108366262')
         comments_list = api.wall.getComments(owner_id='-108366262', post_id=post_id, v=v)
@@ -114,6 +131,7 @@ def main():
     db.vsu_community_insert(vsu_group)
     users = db.select_users_ids()
     posts = get_vsu_posts()
+    db.insert_posts(posts)
     activities = get_activity(posts, users)
     db.insert_activities(activities)
 

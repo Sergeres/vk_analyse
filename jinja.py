@@ -206,7 +206,7 @@ def topcomment(conn):
 
 env = Environment(loader = FileSystemLoader('templates/'))
 template = env.get_template('templateRE.html')
-
+print(db.generate_db_name())
 peoplewoage(create_conn(db.generate_db_name()))
 select_mem(create_conn(db.generate_db_name()))
 top_community(create_conn(db.generate_db_name()), 'Жен.')
