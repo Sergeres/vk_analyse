@@ -37,8 +37,18 @@ def select_mem(conn):
     rows = list(sum(rows, ()))
     summa = sum(rows)
     x_row = ["< 18","18-21","21-24","24-27","27-30","30-35","35-45","> 45"]
+    dataframe = pand.DataFrame()
+    dataframe['Количество'] = rows
+    dataframe['Категории'] = x_row
+    agraph = dataframe.plot(x='Категории', kind='bar', color='teal')
+    agraph.set(xlabel="Категории возрастов", ylabel="Количество")
+    plt.tight_layout()
+    plt.savefig('templates/screenshots/categoryGroupscount.png')
     for i in range(rows.__len__()):
-        rows[i] = rows[i] * 100 / summa
+        if rows[i] == 0:
+            continue
+        else:
+            rows[i] = rows[i] * 100 / summa
     dataframe = pand.DataFrame()
     dataframe['Проценты'] = rows
     dataframe['Категории'] = x_row
@@ -46,6 +56,7 @@ def select_mem(conn):
     agraph.set(xlabel = "Категории возрастов", ylabel = "Проценты")
     plt.tight_layout()
     plt.savefig('templates/screenshots/categoryGroups.png')
+    plt.close('all')
     return rows
 
 
@@ -83,6 +94,7 @@ def select_member_noedc(conn):
     agraph.set(xlabel = "Категории возрастов", ylabel = "Количество")
     plt.tight_layout()
     plt.savefig('templates/screenshots/membersNOEDC.png')
+    plt.close('all')
     return rows
 
 
@@ -169,6 +181,7 @@ def peoplewoage(conn):
     # ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
     plt.title("Распределение пользователей по наличию возраста.")
     plt.savefig('templates/screenshots/piemembers' + '.png')
+    plt.close('all')
 
 
 def toplike(conn):
@@ -205,5 +218,5 @@ comments = topcomment(create_conn(db.generate_db_name()))
 select_member_noedc(create_conn(db.generate_db_name()))
 
 with open("templates/new.html", "w", encoding='utf-8') as f:
-    f.write(template.render(url1 = 'screenshots/categoryGroups.png', url2 = 'screenshots/womensTOP5.png', url3 = 'screenshots/mensTOP5.png', mems = graphs, mems0 = tgraphs, url4 = 'screenshots/piemembers.png', datas = datas, comments = comments, url5 = 'screenshots/membersNOEDC.png'))
+    f.write(template.render(url1 = 'screenshots/categoryGroups.png', url2 = 'screenshots/womensTOP5.png', url3 = 'screenshots/mensTOP5.png', mems = graphs, mems0 = tgraphs, url4 = 'screenshots/piemembers.png', datas = datas, comments = comments, url5 = 'screenshots/membersNOEDC.png', url6 = 'screenshots/categoryGroupscount.png'))
 

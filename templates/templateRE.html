@@ -24,12 +24,18 @@
                 <img src="{{ url4 }}">
             </td>
             <td align="center">
+                <h3>"Распределение подписчиков по возрастам в процентах"</h3>
             <img src="{{ url1 }}">
             </td>
 
         </tr>
           <tr>
-          <td align="center" colspan="2">
+              <td align="center">
+              <br>
+              <h3>"Распределение подписчиков по возрастам в количестве"</h3>
+              <img src="{{ url6 }}">
+          </td>
+          <td align="center">
               <br>
               <h3>"Количество людей не указавших ВУЗ"</h3>
               <img src="{{ url5 }}">
@@ -89,7 +95,7 @@
                       <h3>Топ постов по количеству комментариев</h3>
                       <ul>
                       {% for comment in comments %}
-                          <a href="{{comment[0]}}">{{comment[0]}}</a>  , Количество комментариев = {{comment[1]}}<br>
+                          <a href="{{comment[0]}}">{{comment[0]}}</a>  , Количество людей оставивших комментарий = {{comment[1]}}<br>
                       {% endfor %}
                       </ul>
                   </td>
