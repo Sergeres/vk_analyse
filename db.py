@@ -177,6 +177,19 @@ def select_users_ids():
     return users
 
 
+def select_posts_text():
+    connection = create_db(False)
+    cursor = connection.cursor()
+
+    cursor.execute('SELECT content FROM VSU_Post ORDER BY likes')
+    texts = cursor.fetchall()
+    texts = list(sum(texts, ()))
+
+    connection.commit()
+    connection.close()
+    return texts
+
+
 def insert_activities(activities):
     connection = create_db(False)
     cursor = connection.cursor()
