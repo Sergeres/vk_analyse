@@ -3,6 +3,7 @@ import nltk
 import pymorphy2
 from collections import Counter
 import string
+import re
 
 
 def search_words():
@@ -21,8 +22,14 @@ def search_words():
             if token in stopwords_ru or token in string.punctuation or token in other_symbols:
                 continue
             else:
-                words.append(token)
+                if re.search(r'[^а-яА-Я]', token):
+                    print("Не подходящее слово")
+                else:
+                    words.append(token)
     words_popularity = Counter(words)
     print(words_popularity)
     print(*words_popularity.most_common(10), sep="\n")
     return words_popularity
+
+
+search_words()
