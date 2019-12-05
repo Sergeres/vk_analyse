@@ -62,8 +62,6 @@ def get_vsu_posts():
         response = api.wall.get(owner_id='-108366262', v=v, count=count, offset=offset, filter='owner')
         offset += 100
         for post in response['items']:
-            # print('post:', post)
-            # print(post)
             date = datetime.datetime.fromtimestamp(post['date'])
             date = date.strftime('%Y-%m-%d')
             time = datetime.datetime.fromtimestamp(post['date'])
@@ -71,17 +69,15 @@ def get_vsu_posts():
             reposts = post['reposts']['count']
             comments = post['comments']['count']
             likes = post['likes']['count']
-            #print('likes: ', likes)
-            #print('comments: ', comments)
-            #print('reposts: ', reposts)
-            #print('date: ', date)
-            #print('time: ', time.strftime('%H:%M:%S'))
-            posts.append({'postID': post['id'], 'likes': likes, 'comments': comments,
+            try:
+                views = post['views']['count']
+            except:
+                views = None
+            posts.append({'postID': post['id'], 'likes': likes, 'comments': comments, 'views': views,
                           'reposts': reposts, 'date': date, 'time': time, 'text': post['text']})
             counter += 1
             if counter > count:
                 break
-    # print(posts)
     return posts
 
 

@@ -66,6 +66,7 @@ def create_tables():
                    'content text,'
                    'publishDate DATE,'
                    'publishTime TIME,'
+                   'views integer,'
                    'likes integer,'
                    'comments integer,'
                    'reposts integer'
@@ -219,8 +220,9 @@ def insert_posts(posts):
         date = post['date']
         time = post['time']
         text = post['text']
-        cursor.execute('INSERT INTO VSU_Post(id, content, publishDate, publishTime, likes, comments, reposts)'
-                       'VALUES (?, ?, ?, ?, ?, ?, ?)', [id, text, date, time, likes, comments, reposts])
+        views = post['views']
+        cursor.execute('INSERT INTO VSU_Post(id, content, publishDate, publishTime, views, likes, comments, reposts)'
+                       'VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [id, text, date, time, views, likes, comments, reposts])
 
     connection.commit()
     connection.close()
