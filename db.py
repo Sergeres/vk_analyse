@@ -81,9 +81,7 @@ def members_insert(members):
     cursor = connection.cursor()
 
     for member in members:
-        # print(member)
         for info in member:
-            # print(info)
             member_id = info['id']
             member_name = info['first_name'] + ' ' + info['last_name']
             university = None
@@ -94,18 +92,15 @@ def members_insert(members):
                     if info['faculty']:
                         faculty = info['faculty_name']
             except:
-                print('education is null')
+                continue
             gender = ''
             if info['sex'] == 1:
                 gender = 'Жен.'
             else:
                 gender = 'Муж.'
 
-            # Do Age calculating
             bdate = ''
-            # Check bdate for exist in dictionary
             if 'bdate' in info:
-                # Check bdate for completeness ( dd-mm-yy )
                 bdate = re.match('([0-9]+?.[0-9]+?.[0-9]+)', info['bdate'])
             age = None
             if bdate:
@@ -134,7 +129,6 @@ def members_insert(members):
 def member_community_insert(members_communities):
     connection = create_db(False)
     cursor = connection.cursor()
-    # print(*members_communities, sep='\n')
     for member_communities in members_communities:
         member_id = member_communities['id']
         for subscription in member_communities['subscriptions']:
@@ -152,7 +146,6 @@ def vsu_community_insert(vsu_group):
     connection = create_db(False)
     cursor = connection.cursor()
     for item in vsu_group:
-        # print(item)
         group_id = item['id']
         group_name = item['name']
         description = item['description']
@@ -182,25 +175,27 @@ def select_posts_text():
     connection = create_db(False)
     cursor = connection.cursor()
 
-    cursor.execute('SELECT content FROM VSU_Post ORDER BY likes')
+    cursor.execute('SELECT count(*) FROM VSU_Post')
+    count = cursor.fetchall()
+    count = list(sum(count, ()))
+
+    cursor.execute('SELECT content FROM VSU_Post ORDER BY likes DESC')
     texts = cursor.fetchall()
     texts = list(sum(texts, ()))
 
     connection.commit()
     connection.close()
-    return texts
+    return texts, count[0]
 
 
 def insert_activities(activities):
     connection = create_db(False)
     cursor = connection.cursor()
-    # print(activities)
     for activity in activities:
         user_id = activity['userID']
         post_id = activity['postID']
         like = activity['like']
         comment = activity['comment']
-        # print(userID, postID, like, comment)
         cursor.execute('INSERT INTO VSU_Member_Activity(like, repost, comment, postID, memberID, communityID )'
                        'VALUES(?, ?, ?, ?, ?, ?)', [like, 0, comment, post_id, user_id, 108366262])
 
