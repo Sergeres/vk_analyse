@@ -209,27 +209,28 @@ def topcomment(conn):
 
 def timeanalyse(conn):
     timeset = []
+    timeperiods = ["publishTime >= '00-00-00' and publishTime < '01-00-00'", "publishTime >= '01-00-00' and publishTime < '02-00-00'", "publishTime >= '02-00-00' and publishTime < '03-00-00'", "publishTime >= '03-00-00' and publishTime < '04-00-00'",
+                   "publishTime >= '04-00-00' and publishTime < '05-00-00'", "publishTime >= '05-00-00' and publishTime < '06-00-00'", "publishTime >= '06-00-00' and publishTime < '07-00-00'", "publishTime >= '07-00-00' and publishTime < '08-00-00'",
+                   "publishTime >= '08-00-00' and publishTime < '09-00-00'", "publishTime >= '09-00-00' and publishTime < '10-00-00'", "publishTime >= '10-00-00' and publishTime < '11-00-00'", "publishTime >= '11-00-00' and publishTime < '12-00-00'",
+                   "publishTime >= '12-00-00' and publishTime < '13-00-00'", "publishTime >= '13-00-00' and publishTime < '14-00-00'", "publishTime >= '14-00-00' and publishTime < '15-00-00'", "publishTime >= '15-00-00' and publishTime < '16-00-00'",
+                   "publishTime >= '16-00-00' and publishTime < '17-00-00'", "publishTime >= '17-00-00' and publishTime < '18-00-00'", "publishTime >= '18-00-00' and publishTime < '19-00-00'", "publishTime >= '19-00-00' and publishTime < '20-00-00'",
+                   "publishTime >= '20-00-00' and publishTime < '21-00-00'", "publishTime >= '21-00-00' and publishTime < '22-00-00'", "publishTime >= '22-00-00' and publishTime < '23-00-00'", "publishTime >= '23-00-00' and publishTime < '24-00-00'"]
     cur = conn.cursor()
-    cur.execute("select count(*), sum(likes) from VSU_Post where publishTime >= '00-00-00' and publishTime < '04-00-00'")
-    timeset.append(cur.fetchall())
-    cur.execute("select count(*), sum(likes) from VSU_Post where publishTime >= '04-00-00' and publishTime < '08-00-00'")
-    timeset.append(cur.fetchall())
-    cur.execute(
-        "select count(*), sum(likes) from VSU_Post where publishTime >= '08-00-00' and publishTime < '12-00-00'")
-    timeset.append(cur.fetchall())
-    cur.execute(
-        "select count(*), sum(likes) from VSU_Post where publishTime >= '12-00-00' and publishTime < '16-00-00'")
-    timeset.append(cur.fetchall())
-    cur.execute(
-        "select count(*), sum(likes) from VSU_Post where publishTime >= '16-00-00' and publishTime < '20-00-00'")
-    timeset.append(cur.fetchall())
-    cur.execute(
-        "select count(*), sum(likes) from VSU_Post where publishTime >= '20-00-00' and publishTime < '24-00-00'")
-    timeset.append(cur.fetchall())
+    for i in timeperiods:
+        cur.execute("select count(*), sum(likes) from VSU_Post where "  +  (str)(i))
+        timeset.append(cur.fetchall())
     y_row = []
     for i in timeset:
-        y_row.append(i[0][1]/i[0][0])
-    x_row = ["от 0:00 до 4:00", "от 4:00 до 8:00", "от 8:00 до 12:00", "от 12:00 до 16:00", "от 16:00 до 20:00", "от 20:00 до 24:00"]
+        if i[0][1] == None:
+            y_row.append(0)
+        else:
+            y_row.append(i[0][1]/i[0][0])
+    x_row = ["0:00", "1:00", "2:00", "3:00",
+             "4:00", "5:00", "6:00", "7:00",
+             "8:00", "9:00", "10:00", "11:00",
+             "12:00", "13:00", "14:00", "15:00",
+             "16:00", "17:00", "18:00", "19:00",
+             "20:00", "21:00", "22:00", "23:00"]
     dataframe = pand.DataFrame()
     dataframe["Время"] = x_row
     dataframe["Количество"] = y_row
