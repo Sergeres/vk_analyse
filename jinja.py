@@ -186,37 +186,87 @@ def peoplewoage(conn):
 
 def toplike(conn):
     data, result = [], []
+    href = []
     cur = conn.cursor()
-    cur.execute("select postID, count(*) from VSU_Member_Activity where like == 1 group by postID order by count(*) desc limit 5")
+    # cur.execute("select postID, count(*) from VSU_Member_Activity where like == 1 group by postID order by count(*) desc limit 5")
+    cur.execute("select * from VSU_Post order by likes desc limit 5")
     data.append(cur.fetchall())
     for i in range(data[0].__len__()):
-        result.append(['https://vk.com/prcom_vyatsu?w=wall-108366262_' + str(data[0][i][0]), data[0][i][1]])
-    return result
+        result.append(['https://vk.com/prcom_vyatsu?w=wall-108366262_' + str(data[0][i][0]), data[0][i][4]])
+        href.append('-108366262_' + str(data[0][i][0]))
+    return result, href
 
 
 def topcomment(conn):
     data, result = [], []
     cur = conn.cursor()
-    cur.execute("select postID, count(*) from VSU_Member_Activity where comment == 1 group by postID order by count(*) desc limit 5")
+    cur.execute("select * from VSU_Post order by comments desc limit 5")
     data.append(cur.fetchall())
     for i in range(data[0].__len__()):
-        result.append(['https://vk.com/prcom_vyatsu?w=wall-108366262_' + str(data[0][i][0]), data[0][i][1]])
+        result.append(['https://vk.com/prcom_vyatsu?w=wall-108366262_' + str(data[0][i][0]), data[0][i][5]])
     return result
 
 
+def timeanalyse(conn):
+    timeset = []
+    cur = conn.cursor()
+    cur.execute("select count(*), sum(likes) from VSU_Post where publishTime >= '00-00-00' and publishTime < '04-00-00'")
+    timeset.append(cur.fetchall())
+    cur.execute("select count(*), sum(likes) from VSU_Post where publishTime >= '04-00-00' and publishTime < '08-00-00'")
+    timeset.append(cur.fetchall())
+    cur.execute(
+        "select count(*), sum(likes) from VSU_Post where publishTime >= '08-00-00' and publishTime < '12-00-00'")
+    timeset.append(cur.fetchall())
+    cur.execute(
+        "select count(*), sum(likes) from VSU_Post where publishTime >= '12-00-00' and publishTime < '16-00-00'")
+    timeset.append(cur.fetchall())
+    cur.execute(
+        "select count(*), sum(likes) from VSU_Post where publishTime >= '16-00-00' and publishTime < '20-00-00'")
+    timeset.append(cur.fetchall())
+    cur.execute(
+        "select count(*), sum(likes) from VSU_Post where publishTime >= '20-00-00' and publishTime < '24-00-00'")
+    timeset.append(cur.fetchall())
+    y_row = []
+    for i in timeset:
+        y_row.append(i[0][1]/i[0][0])
+    x_row = ["от 0:00 до 4:00", "от 4:00 до 8:00", "от 8:00 до 12:00", "от 12:00 до 16:00", "от 16:00 до 20:00", "от 20:00 до 24:00"]
+    dataframe = pand.DataFrame()
+    dataframe["Время"] = x_row
+    dataframe["Количество"] = y_row
+    cgraph = dataframe.plot(x='Время', kind='line', color='c')
+    cgraph.set(xlabel="Время", ylabel="Количество")
+    plt.tight_layout()
+    plt.xticks(rotation=10)
+    plt.savefig('templates/screenshots/timespread.png', dpi = 400)
+
+
+datamas = (api.wall.getById(posts='-108366262_6011', v=v, offset='0'))
+# print(datamas[0].keys())
+posttext = (datamas[0]['text'])
+urlsrc = (datamas[0]['attachments'][0]['photo']['sizes'][3]['url'])
+
 env = Environment(loader = FileSystemLoader('templates/'))
 template = env.get_template('templateRE.html')
-print(db.generate_db_name())
+# print(db.generate_db_name())
 peoplewoage(create_conn(db.generate_db_name()))
 select_mem(create_conn(db.generate_db_name()))
 top_community(create_conn(db.generate_db_name()), 'Жен.')
 top_community(create_conn(db.generate_db_name()), 'Муж.')
 graphs = top_ages(create_conn(db.generate_db_name()), 'Жен.')
 tgraphs = top_ages(create_conn(db.generate_db_name()), 'Муж.')
-datas = toplike(create_conn(db.generate_db_name()))
+datas, href = toplike(create_conn(db.generate_db_name()))
 comments = topcomment(create_conn(db.generate_db_name()))
 select_member_noedc(create_conn(db.generate_db_name()))
+timeanalyse(create_conn(db.generate_db_name()))
+
+dataroll =[]
+for i in href:
+    datamas = (api.wall.getById(posts=i, v=v, offset='0'))
+    # print(datamas[0].keys())
+    posttext = (datamas[0]['text'])
+    urlsrc = (datamas[0]['attachments'][0]['photo']['sizes'][3]['url'])
+    dataroll.append([posttext, urlsrc])
 
 with open("templates/new.html", "w", encoding='utf-8') as f:
-    f.write(template.render(url1 = 'screenshots/categoryGroups.png', url2 = 'screenshots/womensTOP5.png', url3 = 'screenshots/mensTOP5.png', mems = graphs, mems0 = tgraphs, url4 = 'screenshots/piemembers.png', datas = datas, comments = comments, url5 = 'screenshots/membersNOEDC.png', url6 = 'screenshots/categoryGroupscount.png'))
+    f.write(template.render(url1 = 'screenshots/categoryGroups.png', url2 = 'screenshots/womensTOP5.png', url3 = 'screenshots/mensTOP5.png', mems = graphs, mems0 = tgraphs, url4 = 'screenshots/piemembers.png', datas = datas, comments = comments, url5 = 'screenshots/membersNOEDC.png', url6 = 'screenshots/categoryGroupscount.png', dataroll = dataroll))
 
