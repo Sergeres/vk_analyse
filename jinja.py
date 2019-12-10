@@ -192,7 +192,7 @@ def toplike(conn):
     cur.execute("select * from VSU_Post order by likes desc limit 5")
     data.append(cur.fetchall())
     for i in range(data[0].__len__()):
-        result.append(['https://vk.com/prcom_vyatsu?w=wall-108366262_' + str(data[0][i][0]), data[0][i][4]])
+        result.append(['https://vk.com/prcom_vyatsu?w=wall-108366262_' + str(data[0][i][0]), data[0][i][5]])
         href.append('-108366262_' + str(data[0][i][0]))
     return result, href
 
@@ -203,7 +203,7 @@ def topcomment(conn):
     cur.execute("select * from VSU_Post order by comments desc limit 5")
     data.append(cur.fetchall())
     for i in range(data[0].__len__()):
-        result.append(['https://vk.com/prcom_vyatsu?w=wall-108366262_' + str(data[0][i][0]), data[0][i][5]])
+        result.append(['https://vk.com/prcom_vyatsu?w=wall-108366262_' + str(data[0][i][0]), data[0][i][6]])
     return result
 
 
@@ -233,12 +233,44 @@ def timeanalyse(conn):
              "20:00", "21:00", "22:00", "23:00"]
     dataframe = pand.DataFrame()
     dataframe["Время"] = x_row
-    dataframe["Количество"] = y_row
+    dataframe["Среднее кол-во лайков"] = y_row
     cgraph = dataframe.plot(x='Время', kind='line', color='c')
-    cgraph.set(xlabel="Время", ylabel="Количество")
+    cgraph.set(xlabel="Время", ylabel="Среднее кол-во лайков")
     plt.tight_layout()
-    plt.xticks(rotation=10)
-    plt.savefig('templates/screenshots/timespread.png', dpi = 400)
+    plt.savefig('templates/screenshots/timespread.png')
+
+
+def viewanalyse(conn):
+    timeset = []
+    timeperiods = ["publishTime >= '00-00-00' and publishTime < '01-00-00'", "publishTime >= '01-00-00' and publishTime < '02-00-00'", "publishTime >= '02-00-00' and publishTime < '03-00-00'", "publishTime >= '03-00-00' and publishTime < '04-00-00'",
+                   "publishTime >= '04-00-00' and publishTime < '05-00-00'", "publishTime >= '05-00-00' and publishTime < '06-00-00'", "publishTime >= '06-00-00' and publishTime < '07-00-00'", "publishTime >= '07-00-00' and publishTime < '08-00-00'",
+                   "publishTime >= '08-00-00' and publishTime < '09-00-00'", "publishTime >= '09-00-00' and publishTime < '10-00-00'", "publishTime >= '10-00-00' and publishTime < '11-00-00'", "publishTime >= '11-00-00' and publishTime < '12-00-00'",
+                   "publishTime >= '12-00-00' and publishTime < '13-00-00'", "publishTime >= '13-00-00' and publishTime < '14-00-00'", "publishTime >= '14-00-00' and publishTime < '15-00-00'", "publishTime >= '15-00-00' and publishTime < '16-00-00'",
+                   "publishTime >= '16-00-00' and publishTime < '17-00-00'", "publishTime >= '17-00-00' and publishTime < '18-00-00'", "publishTime >= '18-00-00' and publishTime < '19-00-00'", "publishTime >= '19-00-00' and publishTime < '20-00-00'",
+                   "publishTime >= '20-00-00' and publishTime < '21-00-00'", "publishTime >= '21-00-00' and publishTime < '22-00-00'", "publishTime >= '22-00-00' and publishTime < '23-00-00'", "publishTime >= '23-00-00' and publishTime < '24-00-00'"]
+    cur = conn.cursor()
+    for i in timeperiods:
+        cur.execute("select count(*), sum(views) from VSU_Post where "  +  (str)(i))
+        timeset.append(cur.fetchall())
+    y_row = []
+    for i in timeset:
+        if i[0][1] == None:
+            y_row.append(0)
+        else:
+            y_row.append(i[0][1]/i[0][0])
+    x_row = ["0:00", "1:00", "2:00", "3:00",
+             "4:00", "5:00", "6:00", "7:00",
+             "8:00", "9:00", "10:00", "11:00",
+             "12:00", "13:00", "14:00", "15:00",
+             "16:00", "17:00", "18:00", "19:00",
+             "20:00", "21:00", "22:00", "23:00"]
+    dataframe = pand.DataFrame()
+    dataframe["Время"] = x_row
+    dataframe["Среднее кол-во просмотров"] = y_row
+    cgraph = dataframe.plot(x='Время', kind='line', color='c')
+    cgraph.set(xlabel="Время", ylabel="Среднее кол-во просмотров")
+    plt.tight_layout()
+    plt.savefig('templates/screenshots/viewsspred.png')
 
 
 datamas = (api.wall.getById(posts='-108366262_6011', v=v, offset='0'))
@@ -259,6 +291,7 @@ datas, href = toplike(create_conn(db.generate_db_name()))
 comments = topcomment(create_conn(db.generate_db_name()))
 select_member_noedc(create_conn(db.generate_db_name()))
 timeanalyse(create_conn(db.generate_db_name()))
+viewanalyse(create_conn(db.generate_db_name()))
 
 dataroll =[]
 for i in href:
@@ -269,5 +302,5 @@ for i in href:
     dataroll.append([posttext, urlsrc])
 
 with open("templates/new.html", "w", encoding='utf-8') as f:
-    f.write(template.render(url1 = 'screenshots/categoryGroups.png', url2 = 'screenshots/womensTOP5.png', url3 = 'screenshots/mensTOP5.png', mems = graphs, mems0 = tgraphs, url4 = 'screenshots/piemembers.png', datas = datas, comments = comments, url5 = 'screenshots/membersNOEDC.png', url6 = 'screenshots/categoryGroupscount.png', dataroll = dataroll))
+    f.write(template.render(url1 = 'screenshots/categoryGroups.png', url2 = 'screenshots/womensTOP5.png', url3 = 'screenshots/mensTOP5.png', mems = graphs, mems0 = tgraphs, url4 = 'screenshots/piemembers.png', datas = datas, comments = comments, url5 = 'screenshots/membersNOEDC.png', url6 = 'screenshots/categoryGroupscount.png', dataroll = dataroll, url7='screenshots/viewsspred.png', url8='screenshots/timespread.png'))
 
