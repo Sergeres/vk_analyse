@@ -27,8 +27,14 @@ def search_words():
                     if len(token) >= 5:
                         words.append(token)
     words_popularity = Counter(words)
+    words_popularity = words_popularity.most_common(30)
     # print(words_popularity)
-    print(*words_popularity.most_common(10), sep="\n")
+    # print(*words_popularity.most_common(10), sep="\n")
+    words = []
+    for word, count in words_popularity:
+        words.append({'word': word, 'count': count})
+    print(words)
+
     return words_popularity
 
 
