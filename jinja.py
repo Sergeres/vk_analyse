@@ -1,17 +1,10 @@
 # -*- coding: utf-8 -*-
 import sqlite3
-
-import numpy as np
 import vk
 import pandas as pand
-from PIL import Image
-
 import db
 import matplotlib.pyplot as plt
 from jinja2 import Environment, FunctionLoader, PackageLoader, PrefixLoader, DictLoader, FileSystemLoader
-import PopularWords
-import wordcloud
-
 session = vk.Session(access_token='d5b441ccd5b441ccd5b441cc0bd5d94752dd5b4d5b441cc883ce57ed215c145977b71cd')
 api = vk.API(session)
 v = 5.103
@@ -211,21 +204,6 @@ def topcomment(conn):
     return result
 
 
-def words_cloud():
-    vsu_mask = np.array(Image.open("alice_mask.png"))
-    words = PopularWords.search_words()
-    wc = wordcloud.WordCloud(width=2600, height=2200, background_color="white", relative_scaling=1.0,
-                   collocations=False, min_font_size=10, mask=vsu_mask, contour_width=3, contour_color='teal').generate_from_frequencies(dict(words))
-    plt.axis("off")
-    plt.figure(figsize=(9, 6))
-    plt.imshow(wc, interpolation="bilinear")
-    # plt.title("%d" % year)
-    plt.xticks([])
-    plt.yticks([])
-    plt.tight_layout()
-    plt.show()
-
-words_cloud()
 env = Environment(loader = FileSystemLoader('templates/'))
 template = env.get_template('templateRE.html')
 print(db.generate_db_name())
