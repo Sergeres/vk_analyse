@@ -9,6 +9,39 @@
         .slick-next:before {
             color: black;
         }
+.hovereff ul,
+.hovereff li{
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+.hovereff li{
+	display: inline-block;
+	width: 350px;
+	position: relative;
+}
+.hovereff img{
+	max-width: 450px;
+
+}
+.descr{
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0,0,0,0.9);
+	color: #fff;
+	padding-top: 50px;
+	text-align: center;
+	opacity: 0;
+	-webkit-transition: all .5s;
+	-o-transition: all .5s;
+	transition: all .5s;
+}
+.hovereff li:hover .descr{
+	opacity: 1;
+}
     </style>
 </head>
 <body>
@@ -109,8 +142,7 @@
                               <div class="cols">
                                         <div class="col" ontouchstart="this.classList.toggle('hover');">
                                             <div class="container">
-                                                <div class="front" style="background-image: url({{member[1]}})">
-
+                                                <div class="front" style="background-image: url({{member[1]}}); width: 100%; ">
                                                 </div>
                                                 <div class="back">
                                                     <div class="inner">
@@ -125,8 +157,27 @@
                       {% endfor %}
                       </div>
                   </td>
-              </tr>
               <tr>
+              <tr>
+                <td align="center" colspan="2">
+                  <div class="sl" style="margin: 20px auto; max-width: 700px">
+                      {% for member in dataroll %}
+                      <div class="sl_slide">
+                        <div class="hovereff">
+                            <ul>
+                                <li>
+                                    <span class="descr">
+                                        {{member[0]}}
+                                    </span>
+                                    <img src="{{member[1]}}">
+                                </li>
+                            </ul>
+	                    </div>
+                      </div>
+                      {% endfor %}
+                  </div>
+                </td>
+              </tr>
                   <td align="center">
                       <h3>Среднее количество просмотров распределенное по часам.</h3>
                       <img src="{{ url7 }}">

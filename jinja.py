@@ -3,7 +3,11 @@ import sqlite3
 import vk
 import pandas as pand
 import db
+import numpy as np
 import matplotlib.pyplot as plt
+import PopularWords
+import wordcloud
+from PIL import Image
 from jinja2 import Environment, FunctionLoader, PackageLoader, PrefixLoader, DictLoader, FileSystemLoader
 session = vk.Session(access_token='d5b441ccd5b441ccd5b441cc0bd5d94752dd5b4d5b441cc883ce57ed215c145977b71cd')
 api = vk.API(session)
@@ -237,6 +241,7 @@ def timeanalyse(conn):
     cgraph = dataframe.plot(x='Время', kind='line', color='c')
     cgraph.set(xlabel="Время", ylabel="Среднее кол-во лайков")
     plt.tight_layout()
+    plt.grid()
     plt.savefig('templates/screenshots/timespread.png')
 
 
@@ -270,6 +275,7 @@ def viewanalyse(conn):
     cgraph = dataframe.plot(x='Время', kind='line', color='c')
     cgraph.set(xlabel="Время", ylabel="Среднее кол-во просмотров")
     plt.tight_layout()
+    plt.grid()
     plt.savefig('templates/screenshots/viewsspred.png')
 
 
@@ -278,6 +284,20 @@ datamas = (api.wall.getById(posts='-108366262_6011', v=v, offset='0'))
 posttext = (datamas[0]['text'])
 urlsrc = (datamas[0]['attachments'][0]['photo']['sizes'][3]['url'])
 
+def words_cloud():
+    words = PopularWords.search_words()
+    wc = wordcloud.WordCloud(width=2600, height=2200, background_color="white", relative_scaling=1.0,
+                   collocations=False, min_font_size=10).generate_from_frequencies(dict(words))
+    plt.axis("off")
+    plt.figure(figsize=(9, 6))
+    plt.imshow(wc, interpolation="bilinear")
+    # plt.title("%d" % year)
+    plt.xticks([])
+    plt.yticks([])
+    plt.tight_layout()
+    plt.savefig('templates/screenshots/wordcloud.png')
+
+words_cloud()
 env = Environment(loader = FileSystemLoader('templates/'))
 template = env.get_template('templateRE.html')
 # print(db.generate_db_name())

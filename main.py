@@ -19,8 +19,6 @@ def get_users():
         for member_id in response['items']:
             count += 1
             members.append(api.users.get(user_ids=member_id, v=v, fields='bdate, sex, education'))
-            if count > 20:
-                break
     print(members)
     return members
 
