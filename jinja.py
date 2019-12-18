@@ -9,9 +9,7 @@ import PopularWords
 import wordcloud
 from PIL import Image
 from jinja2 import Environment, FunctionLoader, PackageLoader, PrefixLoader, DictLoader, FileSystemLoader
-session = vk.Session(access_token='d5b441ccd5b441ccd5b441cc0bd5d94752dd5b4d5b441cc883ce57ed215c145977b71cd')
-api = vk.API(session)
-v = 5.103
+
 
 def create_conn(db_file):
     conn = None
@@ -84,13 +82,7 @@ def select_member_noedc(conn):
     cur.execute("SELECT count(name) FROM VSU_Member WHERE age > 45 and university is null ")
     rows.append(cur.fetchall()[0])
     rows = list(sum(rows, ()))
-    summa = sum(rows)
     x_row = ["< 18","18-21","21-24","24-27","27-30","30-35","35-45","> 45"]
-    # for i in range(rows.__len__()):
-    #     if rows[i] == 0:
-    #         continue
-    #     else:
-    #         rows[i] = rows[i] * 100 / summa
     dataframe = pand.DataFrame()
     dataframe['Количество'] = rows
     dataframe['Категории'] = x_row
@@ -278,12 +270,6 @@ def viewanalyse(conn):
     plt.grid()
     plt.savefig('templates/screenshots/viewsspred.png')
 
-
-datamas = (api.wall.getById(posts='-108366262_6011', v=v, offset='0'))
-# print(datamas[0].keys())
-posttext = (datamas[0]['text'])
-urlsrc = (datamas[0]['attachments'][0]['photo']['sizes'][3]['url'])
-
 def words_cloud():
     words = PopularWords.search_words()
     wc = wordcloud.WordCloud(width=2600, height=2200, background_color="white", relative_scaling=1.0,
@@ -291,7 +277,6 @@ def words_cloud():
     plt.axis("off")
     plt.figure(figsize=(9, 6))
     plt.imshow(wc, interpolation="bilinear")
-    # plt.title("%d" % year)
     plt.xticks([])
     plt.yticks([])
     plt.tight_layout()
@@ -300,7 +285,7 @@ def words_cloud():
 words_cloud()
 env = Environment(loader = FileSystemLoader('templates/'))
 template = env.get_template('templateRE.html')
-# print(db.generate_db_name())
+
 peoplewoage(create_conn(db.generate_db_name()))
 select_mem(create_conn(db.generate_db_name()))
 top_community(create_conn(db.generate_db_name()), 'Жен.')
@@ -313,14 +298,9 @@ select_member_noedc(create_conn(db.generate_db_name()))
 timeanalyse(create_conn(db.generate_db_name()))
 viewanalyse(create_conn(db.generate_db_name()))
 
-dataroll =[]
-for i in href:
-    datamas = (api.wall.getById(posts=i, v=v, offset='0'))
-    # print(datamas[0].keys())
-    posttext = (datamas[0]['text'])
-    urlsrc = (datamas[0]['attachments'][0]['photo']['sizes'][3]['url'])
-    dataroll.append([posttext, urlsrc])
-
 with open("templates/new.html", "w", encoding='utf-8') as f:
-    f.write(template.render(url1 = 'screenshots/categoryGroups.png', url2 = 'screenshots/womensTOP5.png', url3 = 'screenshots/mensTOP5.png', mems = graphs, mems0 = tgraphs, url4 = 'screenshots/piemembers.png', datas = datas, comments = comments, url5 = 'screenshots/membersNOEDC.png', url6 = 'screenshots/categoryGroupscount.png', dataroll = dataroll, url7='screenshots/viewsspred.png', url8='screenshots/timespread.png'))
+    f.write(template.render(url1 = 'screenshots/categoryGroups.png', url2 = 'screenshots/womensTOP5.png', url3 = 'screenshots/mensTOP5.png', mems = graphs, mems0 = tgraphs,
+                            url4 = 'screenshots/piemembers.png', datas = datas, comments = comments, url5 = 'screenshots/membersNOEDC.png',
+                            url6 = 'screenshots/categoryGroupscount.png', url7='screenshots/viewsspred.png', url8='screenshots/timespread.png',
+                            url9 = 'screenshots/wordcloud.png'))
 

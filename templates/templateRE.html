@@ -133,51 +133,14 @@
                       </ul>
                   </td>
               </tr>
-              <tr>
-                  <td align="center" colspan="2">
-                      <div class="sl" style="margin: 20px auto; max-width: 700px">
-                      {% for member in dataroll %}
-                          <div class="sl_slide">
-                            <div class="wrapper">
-                              <div class="cols">
-                                        <div class="col" ontouchstart="this.classList.toggle('hover');">
-                                            <div class="container">
-                                                <div class="front" style="background-image: url({{member[1]}}); width: 100%; ">
-                                                </div>
-                                                <div class="back">
-                                                    <div class="inner">
-                                                        <p style="font-size: 70%">{{member[0]}}</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                              </div>
-                             </div>
-                          </div>
-                      {% endfor %}
-                      </div>
-                  </td>
-              <tr>
+
               <tr>
                 <td align="center" colspan="2">
-                  <div class="sl" style="margin: 20px auto; max-width: 700px">
-                      {% for member in dataroll %}
-                      <div class="sl_slide">
-                        <div class="hovereff">
-                            <ul>
-                                <li>
-                                    <span class="descr">
-                                        {{member[0]}}
-                                    </span>
-                                    <img src="{{member[1]}}">
-                                </li>
-                            </ul>
-	                    </div>
-                      </div>
-                      {% endfor %}
-                  </div>
-                </td>
+                      <h3>Облако тегов популярных слов.</h3>
+                      <img src="{{ url9 }}">
+                  </td>
               </tr>
+              <tr>
                   <td align="center">
                       <h3>Среднее количество просмотров распределенное по часам.</h3>
                       <img src="{{ url7 }}">
